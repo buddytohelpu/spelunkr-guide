@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -25,6 +27,11 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.webkit.WebViewAssetLoader;
+import androidx.webkit.WebViewCompat;
+import androidx.webkit.WebViewFeature;
+import java.util.Collections;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public final class MainActivity extends Activity {
     private static final String LOCAL_HOST = "appassets.androidplatform.net";
@@ -32,12 +39,14 @@ public final class MainActivity extends Activity {
     private AudioManager audio;
     private AudioFocusRequest audioFocus;
     private boolean resumed;
+    private boolean television;
+    private boolean watching;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         UiModeManager mode = (UiModeManager) getSystemService(UI_MODE_SERVICE);
-        boolean television = mode != null && mode.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
+        television = mode != null && mode.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.rgb(28, 10, 87));
         root.setOnApplyWindowInsetsListener((view, insets) -> {
@@ -46,8 +55,7 @@ public final class MainActivity extends Activity {
             return insets;
         });
         setContentView(root);
-        if (television) getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        applyFullscreen();
         try {
             web = new WebView(this);
         } catch (RuntimeException missingWebView) {
@@ -72,6 +80,20 @@ public final class MainActivity extends Activity {
         WebViewAssetLoader assets = new WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this)).build();
         web.setWebChromeClient(new WebChromeClient());
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            WebViewCompat.addWebMessageListener(web, "SpelunkrNative",
+                    Collections.singleton("https://" + LOCAL_HOST),
+                    (view, message, origin, mainFrame, reply) -> {
+                        if (!mainFrame) return;
+                        try {
+                            JSONObject data = new JSONObject(message.getData());
+                            if ("watch-mode".equals(data.optString("type"))) {
+                                watching = data.optBoolean("enabled");
+                                applyFullscreen();
+                            }
+                        } catch (JSONException ignored) { /* Only the bundled client sends commands. */ }
+                    });
+        }
         web.setWebViewClient(new WebViewClient() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 return assets.shouldInterceptRequest(request.getUrl());
@@ -103,6 +125,28 @@ public final class MainActivity extends Activity {
         if (web != null) web.evaluateJavascript("window.spelunkr && window.spelunkr." + method + "()", null);
     }
 
+    private void applyFullscreen() {
+        boolean full = television || watching;
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                if (full) controller.hide(WindowInsets.Type.systemBars());
+                else controller.show(WindowInsets.Type.systemBars());
+            }
+        } else {
+            getWindow().getDecorView().setSystemUiVisibility(full
+                    ? View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    : View.SYSTEM_UI_FLAG_VISIBLE);
+        }
+        getWindow().getDecorView().requestApplyInsets();
+    }
+
+    @Override public void onWindowFocusChanged(boolean focused) {
+        super.onWindowFocusChanged(focused);
+        if (focused) applyFullscreen();
+    }
+
     private void action(String key) {
         if (web != null) web.evaluateJavascript("window.spelunkr && window.spelunkr.action('" + key + "')", null);
     }
@@ -125,6 +169,7 @@ public final class MainActivity extends Activity {
             case KeyEvent.KEYCODE_DPAD_CENTER: case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_MEDIA_PLAY: case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE: key = "ok"; break;
             case KeyEvent.KEYCODE_MENU: case KeyEvent.KEYCODE_INFO: key = "help"; break;
+            case KeyEvent.KEYCODE_TV_ZOOM_MODE: key = "picture"; break;
             default: return super.dispatchKeyEvent(event);
         }
         if (event.getAction() == KeyEvent.ACTION_DOWN) action(key);
@@ -134,6 +179,7 @@ public final class MainActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         resumed = true;
+        applyFullscreen();
         if (web != null) { web.onResume(); call("resume"); }
         if (audio != null && audioFocus != null) audio.requestAudioFocus(audioFocus);
     }

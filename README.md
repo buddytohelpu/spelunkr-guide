@@ -22,7 +22,7 @@ This is an independent client for the original [Spelunkr.tv](https://spelunkr.tv
 
 Install **[spelunkr-guide-android.apk](https://github.com/buddytohelpu/spelunkr-guide/releases/latest/download/spelunkr-guide-android.apk)** on Android 8.0 or later with a current Android System WebView. Open the APK on the device and allow installation from that source when Android prompts. The same signed APK includes both the regular app launcher and the Android TV launcher with a television banner.
 
-Phones and tablets use touch controls and a scrollable guide. Tap a program to select it, then tap **Watch channel**, or tap the selected program again. Android TV automatically uses a layout sized for television and accepts D-pad, OK, Back, channel, and Menu / Info keys. Back returns to the guide; Back from the guide exits. The player pauses when the app leaves the foreground and rejoins the live broadcast on return.
+Phones and tablets use a compact guide with a playing preview and touch controls. The channel list scrolls within the available screen height, including in landscape. Tap a program to select it, then tap **Watch channel**, or tap the selected program again. Android TV automatically uses a layout sized for television and accepts D-pad, OK, Back, channel, and Menu / Info keys. Watch fills the screen and hides Android's system bars; **Guide** or Android Back returns to the guide and restores the bars on phones and tablets. Back from the guide exits. The player pauses when the app leaves the foreground and rejoins the live broadcast on return.
 
 You can also install over an already authorized ADB connection:
 
@@ -63,6 +63,14 @@ python3 scripts/package-flatpak.py
 ```
 
 The packager exports the bundled Python client and web assets without downloading a compiler SDK. To run from source, install PyGObject, GTK4, WebKitGTK 6.0, and suitable GStreamer codecs, then run `python3 clients/linux/main.py`.
+
+## Screen sizes and picture proportions
+
+Android, Linux, and the browser fit the guide to the current window, with scrolling inside the channel list. The layout adapts to portrait, landscape, small desktop windows, and television screens. TV controls and credits include a margin for overscan. The Linux window starts within the monitor's available dimensions and can resize down to 480×320; the phone layout also supports 320×480 portrait screens. The native Roku guide scales its HD design to the device's display.
+
+The **Original / Stretch** button above the preview and fullscreen picture changes video fitting in Android, Linux, and the browser. **Original** preserves the video's proportions. **Stretch** fills the frame and may widen older 4:3 footage; black bars already encoded into a file remain part of the picture. The app remembers your choice. Keyboard users can press **S**. On Android TV, open **Remote help** with Menu / Info, then press Left / Right to change picture mode. The fullscreen **Guide** button returns touch users to the guide. Linux users can press **F11** to fill the entire desktop display.
+
+Version 0.3.0 also fixes Linux playback that continued with audio after selecting Watch: WebKit could give the fixed video container zero height. Fullscreen video now has explicit dimensions, and the Linux smoke check verifies that its visible rectangle matches the window.
 
 ## Optional browser preview
 

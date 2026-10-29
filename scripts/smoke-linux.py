@@ -30,6 +30,12 @@ script = """JSON.stringify({
   status: document.getElementById('schedule-status')?.textContent,
   message: document.getElementById('playback-message')?.textContent,
   watching: document.getElementById('television')?.classList.contains('watch-mode'),
+  viewport: {width: innerWidth, height: innerHeight},
+  videoRect: document.getElementById('video')?.getBoundingClientRect().toJSON(),
+  creditsBottom: document.querySelector('.network-note')?.getBoundingClientRect().bottom,
+  guideHeight: document.getElementById('guide-viewport')?.clientHeight,
+  picture: document.documentElement.dataset.picture,
+  objectFit: getComputedStyle(document.getElementById('video')).objectFit,
   help: document.getElementById('help-dialog')?.open,
   video: { ready: document.getElementById('video')?.readyState,
            paused: document.getElementById('video')?.paused,
@@ -75,6 +81,9 @@ def evaluated(web, result, _data):
         if state["errors"]:
             finish(False, "Guide contains channel errors")
             return
+        if state["creditsBottom"] > state["viewport"]["height"] + 1 or state["guideHeight"] < 30:
+            finish(False, "Guide does not fit the desktop window")
+            return
         if state["video"]["ready"] < 2 or state["video"]["paused"]:
             return
         print("31 live channels and video playback ready", flush=True)
@@ -89,6 +98,18 @@ def evaluated(web, result, _data):
         stage = "watch"
     elif stage == "watch" and state["watching"] and state["video"]["ready"] >= 2 and not state["video"]["paused"]:
         observations[stage] = state
+        if abs(state["videoRect"]["height"] - state["viewport"]["height"]) > 2 or abs(state["videoRect"]["width"] - state["viewport"]["width"]) > 2:
+            finish(False, "Fullscreen video does not fill the window")
+            return
+        command("window.spelunkr.togglePicture()")
+        stage = "picture"
+    elif stage == "picture":
+        observations[stage] = state
+        expected = "original" if observations["watch"]["picture"] == "stretch" else "stretch"
+        if state["picture"] != expected or state["objectFit"] != ("fill" if expected == "stretch" else "contain"):
+            finish(False, "Picture mode did not change the video fitting")
+            return
+        command("window.spelunkr.togglePicture()")
         command("window.spelunkr.handleBack(); window.spelunkr.action('help')")
         stage = "help"
     elif stage == "help":
@@ -107,7 +128,7 @@ def evaluated(web, result, _data):
         stage = "resume"
     elif stage == "resume" and state["video"]["ready"] >= 2 and not state["video"]["paused"]:
         observations[stage] = state
-        finish(True, "Live guide, playback, navigation, help, suspend and resume passed")
+        finish(True, "Live guide, visible fullscreen playback, picture fitting, navigation, help, suspend and resume passed")
         return
 
 

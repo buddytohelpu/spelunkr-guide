@@ -11,5 +11,5 @@
   </description>
   <launchable type="desktop-id">io.github.buddy.SpelunkrGuide.desktop</launchable>
   <url type="homepage">https://spelunkr.tv/</url>
-  <releases><release version="0.2.0" date="2026-10-29" /></releases>
+  <releases><release version="0.3.0" date="2026-10-29" /><release version="0.2.0" date="2026-10-29" /></releases>
 </component>

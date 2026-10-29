@@ -33,7 +33,11 @@
           <div class="station-card" id="station-card"><span>SPELUNKR</span><p id="station-text">PLEASE STAND BY</p><small>ALWAYS LIVE. FOREVER.</small></div>
           <div class="picture-noise" aria-hidden="true"></div>
           <div class="screen-bug" id="screen-bug">SPELUNKR</div>
-          <button id="sound-button" class="sound-button" aria-label="Unmute broadcast">SOUND OFF</button>
+          <div class="picture-controls" aria-label="Picture and sound controls">
+            <button id="aspect-button" class="sound-button" aria-pressed="false" aria-label="Stretch video to fill the frame">ORIGINAL</button>
+            <button id="sound-button" class="sound-button" aria-label="Unmute broadcast">SOUND OFF</button>
+            <button id="guide-button" class="sound-button" data-action="back">GUIDE</button>
+          </div>
           <div id="playback-message" class="playback-message" role="status"></div>
         </div>
         <div class="preview-caption"><span><span class="live-dot"></span> <span id="tuned-label">YOUR WINDOW INTO THE ARCHIVE</span></span><button id="expand-button" aria-label="Expand live television">⤢</button></div>
@@ -52,7 +56,7 @@
 
     <div id="watch-overlay" class="watch-overlay" hidden><span id="watch-channel"></span><span>OK / BACK &nbsp; CHANNEL GUIDE &nbsp; · &nbsp; ↑ ↓ &nbsp; CHANNEL SURF</span></div>
     <div id="toast" class="toast" role="status"></div>
-    <dialog id="help-dialog"><button id="close-help" aria-label="Close remote help">×</button><span class="eyebrow">WELCOME BACK TO TELEVISION</span><h2>Less scrolling.<br>More channel surfing.</h2><p>Everyone watching a channel sees the same moment. Tune in wherever the tape happens to be.</p><dl><div><dt>↑ / ↓</dt><dd>Browse channels. While watching, change channels.</dd></div><div><dt>← / →</dt><dd>See what's coming up.</dd></div><div><dt>ENTER / OK</dt><dd>Watch the selected channel. Press again to open the guide.</dd></div><div><dt>ESC / BACK</dt><dd>Return to the guide.</dd></div><div><dt>M</dt><dd>Sound on or off.</dd></div><div><dt>? / ✱</dt><dd>This little reminder.</dd></div></dl><button id="got-it" class="tune-button">GOT IT. WHAT'S ON? <span>↗</span></button></dialog>
+    <dialog id="help-dialog"><button id="close-help" aria-label="Close remote help">×</button><span class="eyebrow">WELCOME BACK TO TELEVISION</span><h2>Less scrolling.<br>More channel surfing.</h2><p>Everyone watching a channel sees the same moment. Tune in wherever the tape happens to be.</p><div class="picture-setting"><button id="help-aspect-button" class="tune-button" aria-pressed="false">PICTURE: ORIGINAL</button><p>Original keeps the recorded proportions. Stretch fills the frame and may widen the picture. Press S, or use Left / Right while this help is open, to change it.</p></div><dl><div><dt>↑ / ↓</dt><dd>Browse channels. While watching, change channels.</dd></div><div><dt>← / →</dt><dd>See what's coming up.</dd></div><div><dt>ENTER / OK</dt><dd>Watch the selected channel. Press again to open the guide.</dd></div><div><dt>ESC / BACK</dt><dd>Return to the guide.</dd></div><div><dt>M</dt><dd>Sound on or off.</dd></div><div><dt>? / ✱</dt><dd>This little reminder.</dd></div></dl><button id="got-it" class="tune-button">GOT IT. WHAT'S ON? <span>↗</span></button></dialog>
   </main>
   <audio id="station-audio" preload="none"></audio>
   <script type="module" src="./app.js"></script>

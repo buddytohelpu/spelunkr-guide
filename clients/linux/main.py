@@ -2,6 +2,7 @@
 """Self-contained GTK/WebKit desktop client for the bundled direct broadcast guide."""
 import functools
 import http.server
+import json
 import os
 from pathlib import Path
 import sys
@@ -21,6 +22,10 @@ if not ASSETS.is_dir():
 
 
 class AssetHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
     def log_message(self, *_args):
         pass
 
@@ -38,17 +43,35 @@ class Application(Gtk.Application):
             return
         # The loopback server is part of this process and serves bundled files only.
         # Broadcast data and media requests go directly from WebKit to public HTTPS feeds.
-        handler = functools.partial(AssetHandler, directory=str(ASSETS))
-        self.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
-        threading.Thread(target=self.server.serve_forever, daemon=True).start()
-        self.origin = f"http://127.0.0.1:{self.server.server_port}"
-        self.window = Gtk.ApplicationWindow(application=self, title="Spelunkr Guide")
-        self.window.set_default_size(1280, 800)
-        self.window.set_size_request(640, 560)
         data = Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local/share"))) / APP_ID
         cache = Path(os.environ.get("XDG_CACHE_HOME", str(Path.home() / ".cache"))) / APP_ID
         data.mkdir(parents=True, exist_ok=True)
         cache.mkdir(parents=True, exist_ok=True)
+        settings_file = data / "client.json"
+        port = 0
+        try:
+            saved_port = json.loads(settings_file.read_text()).get("assetPort", 0)
+            if isinstance(saved_port, int) and 1024 <= saved_port <= 65535:
+                port = saved_port
+        except (OSError, ValueError, TypeError, AttributeError):
+            pass
+        handler = functools.partial(AssetHandler, directory=str(ASSETS))
+        try:
+            self.server = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
+        except OSError:
+            self.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        settings_file.write_text(json.dumps({"assetPort": self.server.server_port}) + "\n")
+        threading.Thread(target=self.server.serve_forever, daemon=True).start()
+        self.origin = f"http://127.0.0.1:{self.server.server_port}"
+        self.window = Gtk.ApplicationWindow(application=self, title="Spelunkr Guide")
+        width, height = 1280, 800
+        display = Gdk.Display.get_default()
+        if display and display.get_monitors().get_n_items():
+            bounds = display.get_monitors().get_item(0).get_geometry()
+            width = min(width, max(320, bounds.width - 64))
+            height = min(height, max(240, bounds.height - 64))
+        self.window.set_default_size(width, height)
+        self.window.set_size_request(480, 320)
         session = WebKit.NetworkSession.new(str(data), str(cache))
         self.web = WebKit.WebView(
             network_session=session,

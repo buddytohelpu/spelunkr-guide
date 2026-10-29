@@ -14,6 +14,23 @@ const platform = new URLSearchParams(location.search).get('native');
 document.documentElement.dataset.platform = platform || 'browser';
 if (new URLSearchParams(location.search).get('tv') === '1') document.documentElement.dataset.tv = 'true';
 document.querySelector('.brand').search = location.search;
+let pictureMode = 'original';
+try { if (localStorage.getItem('spelunkr-picture') === 'stretch') pictureMode = 'stretch'; } catch { /* private browsing */ }
+function renderPictureMode() {
+  document.documentElement.dataset.picture = pictureMode;
+  const stretched = pictureMode === 'stretch';
+  $('aspect-button').textContent = pictureMode.toUpperCase();
+  $('aspect-button').setAttribute('aria-pressed', String(stretched));
+  $('aspect-button').setAttribute('aria-label', stretched ? 'Restore original video proportions' : 'Stretch video to fill the frame');
+  $('help-aspect-button').textContent = `PICTURE: ${pictureMode.toUpperCase()}`;
+  $('help-aspect-button').setAttribute('aria-pressed', String(stretched));
+}
+function togglePicture() {
+  pictureMode = pictureMode === 'original' ? 'stretch' : 'original';
+  try { localStorage.setItem('spelunkr-picture', pictureMode); } catch { /* private browsing */ }
+  renderPictureMode();
+}
+renderPictureMode();
 const now = () => Date.now() + clockOffset;
 video.muted = !platform;
 audio.muted = video.muted;
@@ -111,6 +128,7 @@ function overlay() {
 function watchMode(enabled) {
   state.mode = enabled ? 'watch' : 'guide';
   $('television').classList.toggle('watch-mode', enabled);
+  if (platform === 'android') window.SpelunkrNative?.postMessage(JSON.stringify({ type: 'watch-mode', enabled }));
   if (enabled) overlay();
   else { $('watch-overlay').hidden = true; state.selectChannel(state.tunedId, now()); render(); }
 }
@@ -191,8 +209,10 @@ function toggleSound() {
 }
 function showHelp() { $('help-dialog').showModal(); }
 function action(key) {
+  if (key === 'picture') return togglePicture();
   if ($('help-dialog').open) {
     if (key === 'ok' || key === 'back' || key === 'help') $('help-dialog').close();
+    else if (key === 'left' || key === 'right') togglePicture();
     else if (key === 'up' || key === 'down') $('help-dialog').scrollBy(0, key === 'up' ? -60 : 60);
     return;
   }
@@ -227,7 +247,12 @@ $('guide-rows').addEventListener('click', e => {
   } else if (channel) { state.channelIndex = +channel.dataset.channelButton; state.selectNow(now()); render(); }
 });
 document.addEventListener('keydown', e => {
-  if ($('help-dialog').open) { if (e.key === 'Escape' || e.key === 'Enter') $('help-dialog').close(); return; }
+  if (e.key.toLowerCase() === 's') { e.preventDefault(); togglePicture(); return; }
+  if ($('help-dialog').open) {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); togglePicture(); }
+    else if (e.key === 'Escape' || (e.key === 'Enter' && !e.target.closest('button,a'))) $('help-dialog').close();
+    return;
+  }
   const keys = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', Enter: 'ok', Escape: 'back', Backspace: 'back', '*': 'help', '?': 'help' };
   if (e.key === 'Enter' && e.target.closest('button,a')) return;
   if (keys[e.key]) { e.preventDefault(); action(keys[e.key]); }
@@ -237,6 +262,7 @@ document.querySelectorAll('[data-action]').forEach(b => b.addEventListener('clic
 $('watch-button').onclick = () => action('ok');
 $('expand-button').onclick = () => watchMode(true);
 $('sound-button').onclick = toggleSound;
+$('aspect-button').onclick = $('help-aspect-button').onclick = togglePicture;
 $('help-button').onclick = showHelp;
 $('close-help').onclick = $('got-it').onclick = () => $('help-dialog').close();
 $('help-dialog').addEventListener('click', e => { if (e.target === $('help-dialog')) { const r = $('help-dialog').getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) $('help-dialog').close(); } });
@@ -251,7 +277,7 @@ function resume() {
   appActive = true;
   if (!wasActive && state.tunedId) { refreshGuide(); tuneChannel(state.tunedId); }
 }
-window.spelunkr = Object.freeze({ action, handleBack, suspend, resume, toggleSound });
+window.spelunkr = Object.freeze({ action, handleBack, suspend, resume, toggleSound, togglePicture });
 document.addEventListener('visibilitychange', () => { if (document.hidden) suspend(); else resume(); });
 new ResizeObserver(keepSelectionVisible).observe($('guide-viewport'));
 setInterval(() => {
