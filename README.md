@@ -42,10 +42,11 @@ The script builds and lints a signed release APK. It creates or reuses a local r
 
 ## Linux Flatpak
 
-Install **[spelunkr-guide-x86_64.flatpak](https://github.com/buddytohelpu/spelunkr-guide/releases/latest/download/spelunkr-guide-x86_64.flatpak)** on a Linux desktop with Flatpak. Download and open the bundle in your software installer, or install directly from GitHub:
+Install **[spelunkr-guide-x86_64.flatpak](https://github.com/buddytohelpu/spelunkr-guide/releases/latest/download/spelunkr-guide-x86_64.flatpak)** on a Linux desktop with Flatpak. Download and open the bundle in your software installer, or use the terminal:
 
 ```sh
-flatpak install --user https://github.com/buddytohelpu/spelunkr-guide/releases/latest/download/spelunkr-guide-x86_64.flatpak
+curl -fL -o spelunkr-guide-x86_64.flatpak https://github.com/buddytohelpu/spelunkr-guide/releases/latest/download/spelunkr-guide-x86_64.flatpak
+flatpak install --user ./spelunkr-guide-x86_64.flatpak
 flatpak run io.github.buddy.SpelunkrGuide
 ```
 
