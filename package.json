@@ -1,0 +1,32 @@
+{
+  "name": "spelunkr-guide",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "An independent cable-style Spelunkr guide for Roku, Android, and Linux.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buddytohelpu/spelunkr-guide.git"
+  },
+  "homepage": "https://github.com/buddytohelpu/spelunkr-guide#readme",
+  "bugs": {
+    "url": "https://github.com/buddytohelpu/spelunkr-guide/issues"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test tests/*.test.js",
+    "check:roku": "bsc --project bsconfig.json",
+    "build:roku": "node scripts/package-roku.js",
+    "extract:engine": "node scripts/extract-engine.js output/research/site.js"
+  },
+  "devDependencies": {
+    "@rokucommunity/brs": "^0.47.6",
+    "acorn": "^8.15.0",
+    "brighterscript": "^0.72.0",
+    "eslint-scope": "^8.4.0"
+  }
+}

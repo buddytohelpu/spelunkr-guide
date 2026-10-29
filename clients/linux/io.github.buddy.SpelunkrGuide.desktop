@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Spelunkr Guide
+Comment=Channel surf the forgotten videos of Spelunkr.tv
+Exec=spelunkr-guide
+Icon=io.github.buddy.SpelunkrGuide
+Terminal=false
+Categories=AudioVideo;Video;TV;
+Keywords=Spelunkr;Internet Archive;Television;Channels;Guide;
+StartupNotify=true

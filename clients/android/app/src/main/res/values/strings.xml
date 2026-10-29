@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Spelunkr Guide</string>
+    <string name="missing_webview">Spelunkr Guide needs Android System WebView. Install or update it, then reopen the app.</string>
+</resources>

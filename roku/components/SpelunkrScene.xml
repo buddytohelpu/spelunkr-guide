@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="SpelunkrScene" extends="Scene">
+  <interface>
+    <field id="launchArgs" type="assocarray" onChange="onLaunchArgs" />
+  </interface>
+  <script type="text/brightscript" uri="pkg:/source/utils.brs" />
+  <script type="text/brightscript" uri="SpelunkrScene.brs" />
+  <children>
+    <Poster width="1280" height="720" uri="pkg:/images/background.png" loadDisplayMode="scaleToFill" />
+    <Group id="chrome" />
+    <Video id="player" translation="[900,100]" width="332" height="187" enableUI="false" enableTrickPlay="false" visible="false" />
+    <Audio id="stationAudio" />
+    <Group id="stationCard" translation="[900,100]" visible="true">
+      <Rectangle id="cardBackground" width="332" height="187" color="0x21285aff" />
+      <Label id="cardBrand" translation="[16,18]" width="300" height="30" text="SPELUNKR" horizAlign="center" color="0xffff00ff" />
+      <Label id="cardText" translation="[20,55]" width="292" height="98" text="PLEASE STAND BY" horizAlign="center" vertAlign="center" wrap="true" numLines="4" />
+    </Group>
+    <Group id="banner" visible="false" translation="[48,595]">
+      <Rectangle width="1184" height="77" color="0x1c0a57ef" />
+      <Rectangle width="3" height="77" color="0xffff00ff" />
+      <Label id="bannerTitle" translation="[18,12]" width="1148" height="27" color="0xffff00ff" />
+      <Label id="bannerHint" translation="[18,45]" width="1148" height="20" text="OK / BACK  CHANNEL GUIDE       UP / DOWN  CHANNEL SURF" color="0xd6dcffff" />
+    </Group>
+    <Group id="toast" visible="false" translation="[240,564]">
+      <Rectangle width="800" height="56" color="0x21285aff" />
+      <Label id="toastText" translation="[18,6]" width="764" height="44" color="0xffffffff" horizAlign="center" vertAlign="center" wrap="true" numLines="2" />
+    </Group>
+    <Group id="help" visible="false">
+      <Rectangle width="1280" height="720" color="0x001040ef" />
+      <Rectangle translation="[290,95]" width="700" height="530" color="0x21285aff" />
+      <Label id="helpTitle" translation="[330,132]" width="620" height="60" text="WELCOME BACK TO TELEVISION" color="0xffff00ff" />
+      <Label id="helpText" translation="[330,215]" width="620" height="300" wrap="true" numLines="12" />
+      <Label id="helpFooter" translation="[330,550]" width="620" height="30" text="PRESS OK OR BACK TO RETURN" color="0xffff00ff" />
+      <Label id="helpCredit" translation="[330,591]" width="620" height="20" text="Original project by Spelunkr.tv | Video: Internet Archive" color="0xd6dcffff" />
+    </Group>
+    <Timer id="tick" duration="0.5" repeat="true" />
+    <Timer id="guideRefresh" duration="60" repeat="true" />
+  </children>
+</component>

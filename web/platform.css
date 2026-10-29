@@ -1,0 +1,36 @@
+/* Controls sized for touch; the television guide still uses the same palette. */
+@media (pointer: coarse) {
+  .sound-button, .preview-caption button, .footer button { min-height: 44px; min-width: 44px; }
+  .sound-button { top: 5px; right: 5px; }
+  .preview-caption { min-height: 44px; }
+  .footer { flex-wrap: wrap; gap: 4px; }
+  .remote-hints { flex-wrap: wrap; }
+}
+html[data-tv="true"] body { overflow: hidden; }
+html[data-tv="true"] .television {
+  height: 100vh; min-height: 0; padding: 0 3.75%; display: grid;
+  grid-template-rows: 50px 30vh minmax(120px, 1fr) 44px 24px;
+}
+html[data-tv="true"] .masthead { height: auto; }
+html[data-tv="true"] .program-info { gap: 24px; min-height: 0; padding: 10px 14px; grid-template-columns: minmax(0, 1fr) 28%; }
+html[data-tv="true"] .preview-shell { align-self: center; }
+html[data-tv="true"] .preview-screen { height: auto; aspect-ratio: 16 / 9; }
+html[data-tv="true"] .preview-caption { height: 22px; min-height: 22px; }
+html[data-tv="true"] h1 { font-size: clamp(18px, 2vw, 28px); margin: 8px 0; }
+html[data-tv="true"] #program-description { font-size: 12px; margin: 6px 0; }
+html[data-tv="true"] .program-meta { font-size: 10px; gap: 12px; }
+html[data-tv="true"] .tune-button { padding: 8px 12px; }
+html[data-tv="true"] .program-bottom { margin-bottom: 0; }
+html[data-tv="true"] .guide-section { display: flex; flex-direction: column; min-height: 0; --row: 44px; --channel: 210px; }
+html[data-tv="true"] .guide-toolbar { height: 32px; flex-shrink: 0; }
+html[data-tv="true"] .guide-heading { height: 27px; flex-shrink: 0; }
+html[data-tv="true"] .channel-heading, html[data-tv="true"] .time-slot { padding-top: 6px; padding-bottom: 6px; }
+html[data-tv="true"] .guide-viewport { height: auto; min-height: 0; flex: 1; }
+html[data-tv="true"] .guide-tail { height: 22px; flex-shrink: 0; }
+html[data-tv="true"] .footer { min-height: 44px; }
+html[data-tv="true"] .network-note { display: flex; min-height: 24px; padding-top: 2px; padding-bottom: 2px; font-size: 8px; }
+html[data-tv="true"] dialog { max-height: 90vh; overflow-y: auto; }
+@media (max-height: 600px) {
+  html[data-tv="true"] #program-description { display: none; }
+}
+html[data-platform="android"] body { overscroll-behavior: none; }

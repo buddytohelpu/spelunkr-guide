@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.buddy.SpelunkrGuide</id>
+  <name>Spelunkr Guide</name>
+  <summary>Channel surf Spelunkr's archive television network</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary</project_license>
+  <description>
+    <p>An independent television guide for the channels at Spelunkr.tv. Browse programs with your keyboard, watch a channel, and surf up or down just like cable television.</p>
+    <p>Schedules come directly from Spelunkr and video streams directly from the Internet Archive. The original project is credited beneath the guide. No separate server is required.</p>
+  </description>
+  <launchable type="desktop-id">io.github.buddy.SpelunkrGuide.desktop</launchable>
+  <url type="homepage">https://spelunkr.tv/</url>
+  <releases><release version="0.2.0" date="2026-10-29" /></releases>
+</component>

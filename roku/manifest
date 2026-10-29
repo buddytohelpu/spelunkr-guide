@@ -1,0 +1,14 @@
+title=Spelunkr
+major_version=0
+minor_version=2
+build_version=0
+subtitle=Cable TV, but weirder.
+ui_resolutions=hd
+mm_icon_focus_hd=pkg:/images/channel-icon.png
+mm_icon_side_hd=pkg:/images/channel-icon.png
+splash_screen_hd=pkg:/images/splash.png
+splash_color=#1c0a57
+splash_min_time=0
+supports_input_launch=1
+requires_audiometadata=1
+network_not_connected_behavior=run

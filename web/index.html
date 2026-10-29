@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1c0a57" />
+  <title>SPELUNKR — Your regularly unscheduled programming</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./theme.css" />
+  <link rel="stylesheet" href="./platform.css" />
+</head>
+<body>
+  <main id="television" class="television" aria-label="Spelunkr television">
+    <header class="masthead">
+      <a class="brand" href="./index.html" aria-label="Spelunkr home"><span class="brand-icon" aria-hidden="true">S</span>SPELUNKR<span class="brand-dot">.</span></a>
+      <span class="tagline">CABLE TV, BUT WEIRDER.</span>
+      <div class="on-air"><span class="live-dot"></span> ON THE AIR <span class="divider">/</span> <time id="clock">--:-- --</time></div>
+    </header>
+
+    <section class="program-info" aria-label="Selected program">
+      <div class="program-copy">
+        <div class="eyebrow"><span id="channel-number">CH —</span><span class="small-rule"></span><span id="channel-name">ADJUSTING THE ANTENNA</span></div>
+        <h1 id="program-title">Something good<br>is on somewhere.</h1>
+        <div class="program-meta"><span class="live-badge" id="program-status">LIVE NOW</span><span id="program-year"></span><span id="program-time">Connecting to the broadcast…</span></div>
+        <p id="program-description">Forgotten films. Found footage. Beautifully strange television. Pull up a chair.</p>
+        <div class="program-bottom"><button class="tune-button" id="watch-button"><span class="ok-key">OK</span> WATCH CHANNEL <span aria-hidden="true">↗</span></button><span id="remaining" class="remaining"></span></div>
+      </div>
+      <div class="preview-shell" id="preview-shell">
+        <div class="preview-screen" id="preview-screen">
+          <img id="preview-poster" alt="" />
+          <video id="video" playsinline preload="metadata" aria-label="Live broadcast"></video>
+          <div class="station-card" id="station-card"><span>SPELUNKR</span><p id="station-text">PLEASE STAND BY</p><small>ALWAYS LIVE. FOREVER.</small></div>
+          <div class="picture-noise" aria-hidden="true"></div>
+          <div class="screen-bug" id="screen-bug">SPELUNKR</div>
+          <button id="sound-button" class="sound-button" aria-label="Unmute broadcast">SOUND OFF</button>
+          <div id="playback-message" class="playback-message" role="status"></div>
+        </div>
+        <div class="preview-caption"><span><span class="live-dot"></span> <span id="tuned-label">YOUR WINDOW INTO THE ARCHIVE</span></span><button id="expand-button" aria-label="Expand live television">⤢</button></div>
+      </div>
+    </section>
+
+    <section class="guide-section" id="guide-section" aria-label="Channel guide">
+      <div class="guide-toolbar"><div><h2>THE CHANNEL GUIDE</h2><span id="channel-count">FIND YOUR FREQUENCY</span></div><div class="guide-date" id="guide-date"></div></div>
+      <div class="guide-heading"><div class="channel-heading">CHANNEL <span>↓</span></div><div id="times" class="time-heading"></div></div>
+      <div class="guide-viewport" id="guide-viewport" tabindex="0" role="grid" aria-label="Live channels. Use up and down to browse, left and right for programs, Enter to watch."><div id="guide-rows"></div><div id="loading-guide" class="loading-guide"><span class="antenna">⌁</span> SEARCHING FOR A SIGNAL<span class="loading-dots">...</span></div></div>
+      <div class="guide-tail"><span id="channel-position">— / —</span><span><span class="live-dot"></span> SAME CHANNEL. SAME MOMENT. EVERYONE.</span><span id="schedule-status">24 HOURS / 7 DAYS</span></div>
+    </section>
+
+    <footer class="footer"><div class="remote-hints"><button data-action="up" aria-label="Previous channel"><kbd>↑</kbd></button><button data-action="down" aria-label="Next channel"><kbd>↓</kbd></button><span>CHANNELS</span><button data-action="left" aria-label="Previous program"><kbd>←</kbd></button><button data-action="right" aria-label="Next program"><kbd>→</kbd></button><span>PROGRAMS</span><button data-action="ok"><kbd>OK</kbd><span>WATCH</span></button><button data-action="back"><kbd>BACK</kbd><span>GUIDE</span></button></div><button id="help-button" class="help-button"><kbd>✱</kbd> REMOTE HELP</button></footer>
+    <div class="network-note" aria-label="Project credits"><span class="project-credit">Original project by <a href="https://spelunkr.tv/" target="_blank" rel="noopener noreferrer">Spelunkr.tv ↗</a></span><span>Videos courtesy of the <a href="https://archive.org" target="_blank" rel="noopener noreferrer">Internet Archive ↗</a></span></div>
+
+    <div id="watch-overlay" class="watch-overlay" hidden><span id="watch-channel"></span><span>OK / BACK &nbsp; CHANNEL GUIDE &nbsp; · &nbsp; ↑ ↓ &nbsp; CHANNEL SURF</span></div>
+    <div id="toast" class="toast" role="status"></div>
+    <dialog id="help-dialog"><button id="close-help" aria-label="Close remote help">×</button><span class="eyebrow">WELCOME BACK TO TELEVISION</span><h2>Less scrolling.<br>More channel surfing.</h2><p>Everyone watching a channel sees the same moment. Tune in wherever the tape happens to be.</p><dl><div><dt>↑ / ↓</dt><dd>Browse channels. While watching, change channels.</dd></div><div><dt>← / →</dt><dd>See what's coming up.</dd></div><div><dt>ENTER / OK</dt><dd>Watch the selected channel. Press again to open the guide.</dd></div><div><dt>ESC / BACK</dt><dd>Return to the guide.</dd></div><div><dt>M</dt><dd>Sound on or off.</dd></div><div><dt>? / ✱</dt><dd>This little reminder.</dd></div></dl><button id="got-it" class="tune-button">GOT IT. WHAT'S ON? <span>↗</span></button></dialog>
+  </main>
+  <audio id="station-audio" preload="none"></audio>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

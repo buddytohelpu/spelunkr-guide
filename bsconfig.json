@@ -1,0 +1,9 @@
+{
+  "rootDir": "roku",
+  "files": ["manifest", "source/**/*", "components/**/*", "images/**/*", "fonts/**/*"],
+  "stagingDir": "dist/.roku-staging",
+  "outFile": "dist/spelunkr-roku.zip",
+  "createPackage": false,
+  "copyToStaging": false,
+  "autoImportComponentScript": false
+}
